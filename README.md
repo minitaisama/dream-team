@@ -1,88 +1,79 @@
 # DreamTeam 2.0
 
+```text
+User ask
+   |
+   v
+ Coach
+(scope / task card / gate)
+   |
+   +--------> Solo ------------------------------+
+   |                                             |
+   v                                             v
+ Lebron ----------------------------------> final update
+(build / verify)                                ^
+   |                                            |
+   v                                            |
+ Curry (when needed) ---------------------------+
+(QA / risk / ship-hold)
+```
+
 A lightweight operating model for AI-assisted software work.
 
-DreamTeam 2.0 is built around 3 clear roles:
+---
+
+## Inspiration & profiles
+
+DreamTeam 2.0 is mainly inspired by two strong open-source directions:
+
+### Garry Tan / gstack
+- Repo: <https://github.com/garrytan/gstack>
+- Why it matters: strong workflow abstraction, explicit modes, builder-facing orchestration
+
+### 666ghj (BaiFu) / BettaFish
+- Repo: <https://github.com/666ghj/BettaFish>
+- Why it matters: strong product framing, clear engine decomposition, structured outputs, great demoability
+
+DreamTeam 2.0 does **not** copy either system directly.
+It takes workflow clarity from **gstack** and product/structure lessons from **BettaFish**, then compresses them into a lighter runbook.
+
+---
+
+## What DreamTeam 2.0 is
+
+DreamTeam 2.0 is a small runbook for running software work with AI agents without turning every task into process theater.
+
+It is optimized for:
+- **Codex-first execution**
+- **lightweight handoffs**
+- **clear role ownership**
+- **quality per token**
+
+Core roles:
 - **Coach** (`pm-agent`) — scope, task framing, release gate
 - **Lebron** (`code-agent`) — implementation and local execution
 - **Curry** (`qa-agent`) — independent validation and release confidence
 
-The core goal is simple:
-- keep orchestration clear
-- keep execution fast
-- keep QA independent when needed
-- keep token burn low
-
----
-
-## What it is
-
-DreamTeam 2.0 is a small runbook for running software work with AI agents without turning every task into process theater.
-
-It is intentionally optimized for:
-- **Codex-first execution**
-- **lightweight handoffs**
-- **quality per token**
-- **clear role ownership**
-
-The default modes are:
+Default modes:
 - **Solo**
 - **Build**
 - **Release-critical**
 
 ---
 
-## Why it exists
-
-This project came from real workflow pain:
-- too much context forwarding
-- too much overlap between PM / coding / QA
-- QA validating a moving target
-- too much token burn for the amount of quality gained
-
-DreamTeam 2.0 is the response to that.
-
----
-
-## Inspirations
-
-DreamTeam 2.0 was inspired by two strong open-source directions:
-
-### 1. gstack
-Repo: <https://github.com/garrytan/gstack>
-
-What it contributed:
-- explicit workflow modes
-- strong builder-facing orchestration ideas
-- treating AI work as an operating model, not just prompts
-
-### 2. BettaFish
-Repo: <https://github.com/666ghj/BettaFish>
-
-What it contributed:
-- strong product framing for multi-agent systems
-- clear engine decomposition
-- structured report/output thinking
-- excellent demoability and packaging
-
-DreamTeam 2.0 does **not** try to copy either repo directly.
-It takes ideas from both and adapts them into a lighter, more execution-economic runbook.
-
----
-
-## Why “DreamTeam 2.0”
+## Why “2.0”
 
 The earlier internal framing was **Dream Team**.
 
-The new name **DreamTeam 2.0** signals that this is the refined public version:
-- lighter than the original internal operating style
+**DreamTeam 2.0** means the public refined version:
+- lighter
 - more Codex-friendly
+- stricter about QA gates
 - more explicit about token efficiency
-- more disciplined about artifacts and QA gates
 
 In short:
-- **Dream Team** = the original concept
-- **DreamTeam 2.0** = the refined public runbook
+- **Dream Team** = original concept
+- **DreamTeam 2.0** = refined public runbook
 
 ---
 
@@ -90,20 +81,10 @@ In short:
 
 - freeze scope before coding
 - use tiny task cards
-- keep inter-agent handoffs brutally short
+- keep handoffs brutally short
 - validate a fixed contract, not an evolving target
-- default to the lightest mode that still preserves quality
+- use the lightest mode that still preserves quality
 - optimize for **quality per token**
-
----
-
-## People / profiles behind the inspirations
-
-### Garry Tan
-Garry Tan is a well-known startup founder/investor and the public force behind **gstack**. The key thing to learn from his repo is workflow abstraction: how to turn AI-assisted work into explicit operating modes for builders.
-
-### 666ghj / BaiFu
-`666ghj` (BaiFu) is a strong AI-builder profile focused on multi-agent products such as **BettaFish** and **MiroFish**. The key thing to learn there is productization: how to package a multi-agent system so it feels like a real product, not just a technical demo.
 
 ---
 
@@ -117,14 +98,14 @@ Garry Tan is a well-known startup founder/investor and the public force behind *
 
 ---
 
-## Language versions
+## English
 
-- English: [`README.md`](./README.md)
-- Vietnamese: [`README.vi.md`](./README.vi.md)
-- Chinese: [`README.zh.md`](./README.zh.md)
+DreamTeam 2.0 is a lightweight stage-based runbook where Coach freezes the problem, Lebron executes bounded work fast, Curry validates with evidence when needed, and every handoff stays small to minimize token burn.
 
----
+## Tiếng Việt
 
-## Short version
+DreamTeam 2.0 là một runbook stage-based gọn nhẹ: Coach chốt bài toán trước, Lebron execute bounded work nhanh, Curry validate bằng evidence khi cần, và mọi handoff đều được giữ rất nhỏ để giảm token burn.
 
-**DreamTeam 2.0 is a lightweight stage-based runbook where Coach freezes the problem, Lebron executes bounded work fast, Curry validates with evidence when needed, and every handoff stays small to minimize token burn.**
+## 中文
+
+DreamTeam 2.0 是一个轻量级、stage-based 的 runbook：Coach 先冻结问题，Lebron 快速执行有边界的工作，Curry 在需要时基于证据做验证，而所有 handoff 都尽量保持很小，以降低 token burn。
