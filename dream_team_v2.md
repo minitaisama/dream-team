@@ -1,4 +1,4 @@
-# Dream Team v2
+# DreamTeam 2.0
 
 A lightweight operating model for:
 - Coach (`pm-agent`)
@@ -15,7 +15,7 @@ This version is optimized for:
 
 ## 1. Core idea
 
-Dream Team v2 is **stage-based**, not model-based.
+DreamTeam 2.0 is **stage-based**, not model-based.
 
 Roles stay the same:
 - **Coach** = scope, task framing, workflow, release gate
@@ -354,4 +354,4 @@ At minimum, avoid treating drafts, summaries, or derived outputs as published tr
 
 ## 11. One-line doctrine
 
-**Dream Team v2 is a lightweight stage-based system where Coach freezes the problem, Lebron/Codex executes bounded work fast, Curry validates with evidence when needed, and every handoff is kept brutally small to minimize token burn.**
+**DreamTeam 2.0 is a lightweight stage-based system where Coach freezes the problem, Lebron/Codex executes bounded work fast, Curry validates with evidence when needed, and every handoff is kept brutally small to minimize token burn.**

@@ -1,4 +1,4 @@
-# dream-team
+# DreamTeam 2.0
 
 A lightweight multi-agent operating model for software work.
 
@@ -7,13 +7,25 @@ Core roles:
 - **Lebron** (`code-agent`) — implementation and local execution
 - **Curry** (`qa-agent`) — independent validation and release confidence
 
-This repo contains the public docs/runbooks for the current Dream Team setup.
+This repo contains the public docs/runbooks for the current DreamTeam 2.0 setup.
 
 ---
 
 ## What this project is
 
-Dream Team is a practical operating model for running software work across a small set of specialized roles without turning every task into process theater.
+**DreamTeam 2.0** is the current public name of the project.
+It grew out of the earlier internal name **Dream Team**.
+
+The rename is intentional:
+- **Dream Team** described the original idea of a small role-based agent trio
+- **DreamTeam 2.0** signals that the project is now a more opinionated second-generation operating model
+- it is lighter, more Codex-friendly, and much more explicit about token efficiency than the earlier framing
+
+In short:
+- **Dream Team** = the original concept
+- **DreamTeam 2.0** = the refined public runbook
+
+DreamTeam 2.0 is a practical operating model for running software work across a small set of specialized roles without turning every task into process theater.
 
 The goal is simple:
 - keep planning clear
@@ -22,7 +34,7 @@ The goal is simple:
 - keep token burn low
 - keep ownership obvious
 
-Dream Team v2 is intentionally **lightweight**.
+DreamTeam 2.0 is intentionally **lightweight**.
 It is not trying to be a huge framework or a prompt zoo.
 It is a small runbook for getting real work done with clear handoffs.
 
@@ -41,12 +53,12 @@ What gstack got very right:
 
 That was the spark.
 
-But Dream Team is **not a copy** of gstack.
+But DreamTeam 2.0 is **not a copy** of gstack.
 It takes the core insight and adapts it to a different environment, different tooling assumptions, and a different set of lessons learned from real project work.
 
 ---
 
-## Why Dream Team exists
+## Why DreamTeam 2.0 exists
 
 After running real projects, a few patterns kept repeating:
 
@@ -57,7 +69,7 @@ After running real projects, a few patterns kept repeating:
 - full history forwarding made runs expensive and noisy
 - one-model-does-everything workflows felt convenient but degraded quality
 
-Dream Team exists to solve those problems with a simpler model.
+DreamTeam 2.0 exists to solve those problems with a simpler model.
 
 ---
 
@@ -66,7 +78,7 @@ Dream Team exists to solve those problems with a simpler model.
 Compared with the original inspiration, this project intentionally changed several things.
 
 ### 1. From model-centric to stage-centric
-Instead of building around one model personality, Dream Team is built around **stages of work**:
+Instead of building around one model personality, DreamTeam 2.0 is built around **stages of work**:
 - framing
 - execution
 - validation
@@ -76,7 +88,7 @@ Roles are stable.
 Model/provider can change.
 
 ### 2. Codex support is first-class
-Dream Team v2 explicitly treats **Codex** as the default executor for well-scoped coding work.
+DreamTeam 2.0 explicitly treats **Codex** as the default executor for well-scoped coding work.
 
 That means:
 - vague asks should not go straight to the executor
@@ -86,7 +98,7 @@ That means:
 
 ### 3. Lightweight over elaborate
 The original inspiration showed the power of explicit modes.
-Dream Team pushes that further toward **minimum viable process**.
+DreamTeam 2.0 pushes that further toward **minimum viable process**.
 
 Only 3 modes are kept:
 - **Solo**
@@ -96,7 +108,7 @@ Only 3 modes are kept:
 This repo deliberately avoids adding too many extra gears.
 
 ### 4. Artifact-first handoffs
-Instead of “see thread above,” Dream Team prefers:
+Instead of “see thread above,” DreamTeam 2.0 prefers:
 - tiny task cards
 - changed files
 - verify results
@@ -104,7 +116,7 @@ Instead of “see thread above,” Dream Team prefers:
 - compact artifact paths when needed
 
 ### 5. Token burn is treated as a first-class design constraint
-Dream Team was redesigned around a harsh reality:
+DreamTeam 2.0 was redesigned around a harsh reality:
 most waste does **not** come from hard tasks.
 It comes from:
 - re-explaining context
@@ -116,19 +128,19 @@ So the runbook now optimizes for **quality per token**, not just quality in the 
 
 ---
 
-## What Dream Team improves over the source inspiration
+## What DreamTeam 2.0 improves over the source inspiration
 
 ### Improvement 1 — Better fit for Codex-style execution
-Dream Team makes Codex the default bounded executor instead of assuming a Claude-shaped workflow.
+DreamTeam 2.0 makes Codex the default bounded executor instead of assuming a Claude-shaped workflow.
 
 ### Improvement 2 — Simpler operating model
-Instead of many cognitive modes, Dream Team v2 reduces the core workflow to 3 practical modes:
+Instead of many cognitive modes, DreamTeam 2.0 reduces the core workflow to 3 practical modes:
 - small task
 - normal build
 - high-risk release
 
 ### Improvement 3 — Stronger PM / QA separation
-Dream Team makes this explicit:
+DreamTeam 2.0 makes this explicit:
 - **Lebron can finish implementation**
 - **Curry decides confidence**
 - **Coach decides ship / hold**
@@ -136,10 +148,10 @@ Dream Team makes this explicit:
 This reduces “done but not actually safe” outcomes.
 
 ### Improvement 4 — Better handoff discipline
-Dream Team uses tiny task cards and fixed response contracts so roles do less re-interpretation.
+DreamTeam 2.0 uses tiny task cards and fixed response contracts so roles do less re-interpretation.
 
 ### Improvement 5 — Lower token burn
-Dream Team v2 aggressively avoids:
+DreamTeam 2.0 aggressively avoids:
 - full-thread forwarding
 - repeated cross-role analysis
 - narrative-heavy handoffs
@@ -157,7 +169,7 @@ So the model is less romantic and more battle-tested.
 
 ---
 
-## Dream Team v2 at a glance
+## DreamTeam 2.0 at a glance
 
 ### Mode A — Solo
 Use when:
@@ -247,9 +259,9 @@ These are the reasons the project looks the way it does now.
 
 ---
 
-## Example run: Layer 4 retrospective (old runbook vs Dream Team v2)
+## Example run: Layer 4 retrospective (old runbook vs DreamTeam 2.0)
 
-One of the clearest real-world inputs for Dream Team v2 came from the earlier **Tu Vi Layer 4** work.
+One of the clearest real-world inputs for DreamTeam 2.0 came from the earlier **Tu Vi Layer 4** work.
 
 That work exposed a few recurring problems in the older operating style:
 - scope was not frozen early enough
@@ -258,7 +270,7 @@ That work exposed a few recurring problems in the older operating style:
 - QA sometimes validated an evolving target instead of a fixed contract
 - token burn grew much faster than delivery quality
 
-Dream Team v2 was designed to fix exactly that.
+DreamTeam 2.0 was designed to fix exactly that.
 
 ### Real retrospective summary
 
@@ -274,7 +286,7 @@ The biggest lessons from that retrospective were:
 
 ### Before vs after
 
-| Dimension | Old runbook (Layer 4 style) | Dream Team v2 |
+| Dimension | Old runbook (Layer 4 style) | DreamTeam 2.0 |
 |---|---:|---:|
 | Typical operating shape | PM-heavy, evolving thread, overlapping analysis | Fixed task card, bounded execution, lean QA |
 | Typical large-turn range | ~167k–205k tokens | much smaller bounded turns |
@@ -292,7 +304,7 @@ With the old runbook:
 - context forwarding was too expensive
 - progress reports were sometimes more narrative than necessary
 
-With Dream Team v2:
+With DreamTeam 2.0:
 - **Coach** freezes the problem earlier
 - **Lebron/Codex** gets a bounded task instead of a long evolving brief
 - **Curry** validates the changed surface against a fixed contract
@@ -301,7 +313,7 @@ With Dream Team v2:
 
 ### Why the new model is better
 
-Dream Team v2 improves the same kind of work by making it:
+DreamTeam 2.0 improves the same kind of work by making it:
 - **cheaper** — far less token waste from re-reading and overlap
 - **clearer** — role ownership is sharper
 - **safer** — QA becomes a real gate, not a loose afterthought
@@ -310,13 +322,13 @@ Dream Team v2 improves the same kind of work by making it:
 
 ### Short takeaway
 
-For Layer 4-style work, Dream Team v2 is expected to preserve quality while cutting token burn by roughly **55%–70%**, with a practical planning assumption of about **57% savings**.
+For Layer 4-style work, DreamTeam 2.0 is expected to preserve quality while cutting token burn by roughly **55%–70%**, with a practical planning assumption of about **57% savings**.
 
 ---
 
 ## Current status
 
-Dream Team v2 is the current active model.
+DreamTeam 2.0 is the current active model.
 
 Its priorities are:
 - lightweight execution
@@ -329,4 +341,4 @@ Its priorities are:
 
 ## Short version
 
-**Dream Team v2 is a lightweight stage-based system where Coach freezes the problem, Lebron/Codex executes bounded work fast, Curry validates with evidence when needed, and every handoff is kept brutally small to minimize token burn.**
+**DreamTeam 2.0 is a lightweight stage-based system where Coach freezes the problem, Lebron/Codex executes bounded work fast, Curry validates with evidence when needed, and every handoff is kept brutally small to minimize token burn.**

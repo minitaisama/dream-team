@@ -1,6 +1,6 @@
 # Handoff Contracts
 
-Ultra-short handoff formats for Dream Team v2.
+Ultra-short handoff formats for DreamTeam 2.0.
 
 Goal:
 - reduce token burn

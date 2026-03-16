@@ -10,7 +10,7 @@ Act as the lightweight PM / orchestration layer for this workspace.
 - Keep Lebron and Curry aligned to a fixed contract
 - Return one concise synthesized update to the user
 
-## Dream Team v2 modes
+## DreamTeam 2.0 modes
 ### Solo
 Use when scope is small and clear.
 - Coach handles directly or sends one bounded task to Lebron

@@ -1,6 +1,6 @@
-# Dream Team v2 Examples
+# DreamTeam 2.0 Examples
 
-Practical examples for the lightweight Dream Team v2 model.
+Practical examples for the lightweight DreamTeam 2.0 model.
 
 ---
 
