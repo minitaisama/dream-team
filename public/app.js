@@ -1,7 +1,7 @@
 // Dreamteam At Work — Phase 1 live data layer (polling + tiny store)
 //
 // Contract:
-// - Loads live.json from GitHub Gist raw URL (data/gist-config.json), else falls back to /public/demo-live.json
+// - Loads live.json from GitHub Gist raw URL (data/gist-config.json), else falls back to /demo-live.json
 // - Polls every 30s with cache-buster and cache:no-store
 // - Stores state globally and exposes getters
 // - Updates a "last updated Xs ago" indicator
