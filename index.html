@@ -275,7 +275,9 @@
 
     async function loadWeeks() {
       try {
-        const res = await fetch('data/weeks/index.json');
+        const basePath = window.location.pathname.includes('/weeks') ? '../..' : '.';
+        const res = await fetch(basePath + '/data/weeks/index.json');
+        if (!res.ok) throw new Error('Failed to fetch index');
         const index = await res.json();
         WEEKS.push(...index.weeks.sort().reverse());
         if (WEEKS.length === 0) {
@@ -283,15 +285,18 @@
           return;
         }
         currentWeekIndex = 0;
-        renderWeek();
+        await renderWeek();
         renderCharts();
       } catch (e) {
-        document.getElementById('ceoCommentary').textContent = 'Failed to load data.';
+        console.error('loadWeeks error:', e);
+        document.getElementById('ceoCommentary').textContent = 'Failed to load data: ' + e.message;
       }
     }
 
     async function loadWeekData(weekId) {
-      const res = await fetch(`data/weeks/${weekId}.json`);
+      const basePath = window.location.pathname.includes('/weeks') ? '../..' : '.';
+      const res = await fetch(basePath + `/data/weeks/${weekId}.json`);
+      if (!res.ok) throw new Error(`Failed to fetch ${weekId}`);
       return await res.json();
     }
 
