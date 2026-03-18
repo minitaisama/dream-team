@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dream Team Retrospective</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --surface2: #1a1a26;
+      --border: #2a2a3a;
+      --text: #e4e4e7;
+      --text2: #a1a1aa;
+      --text3: #71717a;
+      --accent: #8b5cf6;
+      --accent2: #6d28d9;
+      --green: #22c55e;
+      --yellow: #eab308;
+      --red: #ef4444;
+      --blue: #3b82f6;
+      --ceo: #f59e0b;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+    
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--ceo));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .header .subtitle { color: var(--text3); font-size: 0.875rem; margin-top: 0.25rem; }
+    .header .week-badge {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      color: var(--text2);
+    }
+    .week-nav { display: flex; gap: 0.5rem; align-items: center; }
+    .week-nav button {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.375rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+    .week-nav button:hover { border-color: var(--accent); color: var(--accent); }
+    .week-nav button:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    /* CEO Summary */
+    .ceo-summary {
+      background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(139,92,246,0.05));
+      border: 1px solid rgba(245,158,11,0.2);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .ceo-summary .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ceo);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .ceo-summary .commentary { color: var(--text); font-size: 0.95rem; }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+    .stat-card .stat-label { font-size: 0.75rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.04em; }
+    .stat-card .stat-value { font-size: 1.75rem; font-weight: 700; margin-top: 0.25rem; }
+    .stat-card .stat-change { font-size: 0.75rem; margin-top: 0.25rem; }
+    .stat-card .stat-change.up { color: var(--green); }
+    .stat-card .stat-change.down { color: var(--red); }
+    .stat-card .stat-change.neutral { color: var(--text3); }
+
+    /* Agent Cards */
+    .agents-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .agent-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: border-color 0.2s;
+    }
+    .agent-card:hover { border-color: var(--accent); }
+    .agent-card .agent-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .agent-card .agent-name {
+      font-weight: 600;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .agent-card .agent-role { font-size: 0.75rem; color: var(--text3); }
+    .agent-card .agent-badge {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      font-weight: 500;
+    }
+    .badge-coach { background: rgba(59,130,246,0.15); color: var(--blue); }
+    .badge-lebron { background: rgba(34,197,94,0.15); color: var(--green); }
+    .badge-curry { background: rgba(234,179,8,0.15); color: var(--yellow); }
+
+    .agent-stats { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .agent-stat { font-size: 0.8rem; }
+    .agent-stat .num { font-weight: 600; color: var(--text); }
+    .agent-stat .lbl { color: var(--text3); }
+
+    .agent-section { margin-bottom: 0.75rem; }
+    .agent-section-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text3); margin-bottom: 0.35rem; }
+    .agent-section ul { list-style: none; padding: 0; }
+    .agent-section li { font-size: 0.85rem; color: var(--text2); padding-left: 1rem; position: relative; }
+    .agent-section li::before { content: '→'; position: absolute; left: 0; color: var(--accent); }
+    .agent-section.suggestions li::before { content: '💡'; position: absolute; left: 0; }
+
+    /* Action Items */
+    .action-items {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .action-items h3 { font-size: 1rem; margin-bottom: 1rem; }
+    .action-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.875rem;
+    }
+    .action-item:last-child { border-bottom: none; }
+    .action-item .owner {
+      background: var(--surface2);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      color: var(--text3);
+    }
+    .action-item .due { color: var(--text3); font-size: 0.75rem; }
+
+    /* Charts */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .chart-card h3 { font-size: 0.95rem; margin-bottom: 1rem; color: var(--text2); }
+    .chart-card canvas { max-height: 250px; }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 2rem 0;
+      color: var(--text3);
+      font-size: 0.75rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .container { padding: 1rem; }
+      .header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .agents-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <h1>⚡ Dream Team Retro</h1>
+        <div class="subtitle">minitaisama/dreamteam2.0</div>
+      </div>
+      <div class="week-nav">
+        <button id="prevWeek" onclick="changeWeek(-1)">← Prev</button>
+        <span class="week-badge" id="weekLabel">Week 11</span>
+        <button id="nextWeek" onclick="changeWeek(1)">Next →</button>
+      </div>
+    </div>
+
+    <!-- CEO Summary -->
+    <div class="ceo-summary" id="ceoSummary">
+      <div class="label">👤 CEO Commentary</div>
+      <div class="commentary" id="ceoCommentary">Loading...</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid" id="statsGrid"></div>
+
+    <!-- Agent Cards -->
+    <div class="agents-grid" id="agentsGrid"></div>
+
+    <!-- Action Items -->
+    <div class="action-items" id="actionItems">
+      <h3>📋 Action Items</h3>
+      <div id="actionList"></div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3>📈 Velocity Trend</h3>
+        <canvas id="velocityChart"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>🎯 Quality Score</h3>
+        <canvas id="qualityChart"></canvas>
+      </div>
+    </div>
+
+    <div class="footer">
+      Dream Team v3 · MiniSama (CEO) · Coach (PM) · Lebron (Dev) · Curry (QA)
+    </div>
+  </div>
+
+  <script>
+    const WEEKS = [];
+    let currentWeekIndex = 0;
+
+    async function loadWeeks() {
+      try {
+        const res = await fetch('data/weeks/index.json');
+        const index = await res.json();
+        WEEKS.push(...index.weeks.sort().reverse());
+        if (WEEKS.length === 0) {
+          document.getElementById('ceoCommentary').textContent = 'No retrospective data yet.';
+          return;
+        }
+        currentWeekIndex = 0;
+        renderWeek();
+        renderCharts();
+      } catch (e) {
+        document.getElementById('ceoCommentary').textContent = 'Failed to load data.';
+      }
+    }
+
+    async function loadWeekData(weekId) {
+      const res = await fetch(`data/weeks/${weekId}.json`);
+      return await res.json();
+    }
+
+    function changeWeek(delta) {
+      const newIndex = currentWeekIndex + delta;
+      if (newIndex >= 0 && newIndex < WEEKS.length) {
+        currentWeekIndex = newIndex;
+        renderWeek();
+      }
+    }
+
+    async function renderWeek() {
+      const weekId = WEEKS[currentWeekIndex];
+      const data = await loadWeekData(weekId);
+      
+      const weekNum = weekId.replace('2026-W', '');
+      document.getElementById('weekLabel').textContent = `Week ${weekNum}`;
+      document.getElementById('prevWeek').disabled = currentWeekIndex === 0;
+      document.getElementById('nextWeek').disabled = currentWeekIndex === WEEKS.length - 1;
+
+      // CEO
+      document.getElementById('ceoCommentary').textContent = data.ceo.commentary || 'No commentary.';
+
+      // Stats
+      const agents = data.agents;
+      const totalTasks = Object.values(agents).reduce((s, a) => s + (a.stats.tasks_completed || a.stats.audits_completed || 0), 0);
+      const totalBlocked = Object.values(agents).reduce((s, a) => s + (a.stats.tasks_blocked || 0), 0);
+      const qualityScore = data.ceo.trends?.quality_score || agents.curry?.stats?.quality_score || '-';
+      const velocity = data.ceo.trends?.velocity || '-';
+
+      document.getElementById('statsGrid').innerHTML = `
+        <div class="stat-card">
+          <div class="stat-label">Tasks Done</div>
+          <div class="stat-value">${totalTasks}</div>
+          <div class="stat-change neutral">across ${Object.keys(agents).length} agents</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Blocked</div>
+          <div class="stat-value" style="color:${totalBlocked > 0 ? 'var(--yellow)' : 'var(--green)'}">${totalBlocked}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Quality</div>
+          <div class="stat-value">${qualityScore}<span style="font-size:1rem;color:var(--text3)">/10</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Velocity</div>
+          <div class="stat-value" style="font-size:1.25rem">${velocity}</div>
+        </div>
+      `;
+
+      // Agent cards
+      const roleMap = { coach: 'PM', lebron: 'Dev', curry: 'QA' };
+      const badgeMap = { coach: 'badge-coach', lebron: 'badge-lebron', curry: 'badge-curry' };
+      
+      document.getElementById('agentsGrid').innerHTML = Object.entries(agents).map(([key, agent]) => {
+        const statsHtml = Object.entries(agent.stats).map(([k, v]) => 
+          `<div class="agent-stat"><span class="num">${v}</span> <span class="lbl">${k.replace(/_/g, ' ')}</span></div>`
+        ).join('');
+        
+        return `
+          <div class="agent-card">
+            <div class="agent-header">
+              <div>
+                <div class="agent-name">${key.charAt(0).toUpperCase() + key.slice(1)} <span class="agent-badge ${badgeMap[key]}">${roleMap[key]}</span></div>
+              </div>
+            </div>
+            <div class="agent-stats">${statsHtml}</div>
+            ${agent.highlights?.length ? `<div class="agent-section"><div class="agent-section-title">Highlights</div><ul>${agent.highlights.map(h=>`<li>${h}</li>`).join('')}</ul></div>` : ''}
+            ${agent.keep_doing?.length ? `<div class="agent-section"><div class="agent-section-title">Keep Doing</div><ul>${agent.keep_doing.map(h=>`<li>${h}</li>`).join('')}</ul></div>` : ''}
+            ${agent.improve?.length ? `<div class="agent-section"><div class="agent-section-title">Improve</div><ul>${agent.improve.map(h=>`<li>${h}</li>`).join('')}</ul></div>` : ''}
+            ${agent.flow_suggestions?.length ? `<div class="agent-section suggestions"><div class="agent-section-title">Flow Suggestions</div><ul>${agent.flow_suggestions.map(h=>`<li>${h}</li>`).join('')}</ul></div>` : ''}
+            ${agent.blockers?.length ? `<div class="agent-section"><div class="agent-section-title">Blockers</div><ul>${agent.blockers.map(h=>`<li style="color:var(--yellow)">${h}</li>`).join('')}</ul></div>` : ''}
+          </div>
+        `;
+      }).join('');
+
+      // Action items
+      const actions = data.ceo.action_items || [];
+      document.getElementById('actionList').innerHTML = actions.length ? actions.map(a => `
+        <div class="action-item">
+          <span>${a.action}</span>
+          <div style="display:flex;gap:0.5rem;align-items:center">
+            <span class="owner">${a.owner}</span>
+            <span class="due">due ${a.due}</span>
+          </div>
+        </div>
+      `).join('') : '<div style="color:var(--text3);font-size:0.875rem">No action items.</div>';
+    }
+
+    async function renderCharts() {
+      const allData = await Promise.all(WEEKS.map(w => loadWeekData(w)));
+      const labels = allData.map(d => d.week.replace('2026-W', 'W'));
+      
+      const velocities = allData.map(d => {
+        const agents = d.agents;
+        return Object.values(agents).reduce((s, a) => s + (a.stats.tasks_completed || a.stats.audits_completed || 0), 0);
+      });
+      
+      const qualities = allData.map(d => d.ceo.trends?.quality_score || d.agents.curry?.stats?.quality_score || 0);
+
+      const chartDefaults = {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#71717a', font: { size: 12 } } },
+          y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#71717a', font: { size: 12 } }, beginAtZero: true }
+        }
+      };
+
+      // Velocity
+      new Chart(document.getElementById('velocityChart'), {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Tasks',
+            data: velocities,
+            borderColor: '#8b5cf6',
+            backgroundColor: 'rgba(139,92,246,0.1)',
+            fill: true,
+            tension: 0.3,
+            pointBackgroundColor: '#8b5cf6',
+            pointRadius: 5,
+            pointHoverRadius: 7
+          }]
+        },
+        options: chartDefaults
+      });
+
+      // Quality
+      new Chart(document.getElementById('qualityChart'), {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Score',
+            data: qualities,
+            backgroundColor: qualities.map(q => q >= 8 ? 'rgba(34,197,94,0.6)' : q >= 6 ? 'rgba(234,179,8,0.6)' : 'rgba(239,68,68,0.6)'),
+            borderColor: qualities.map(q => q >= 8 ? '#22c55e' : q >= 6 ? '#eab308' : '#ef4444'),
+            borderWidth: 1,
+            borderRadius: 6
+          }]
+        },
+        options: { ...chartDefaults, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, max: 10 } } }
+      });
+    }
+
+    loadWeeks();
+  </script>
+</body>
+</html>
