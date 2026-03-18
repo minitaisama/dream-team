@@ -76,7 +76,8 @@
     }
 
     try {
-      const data = await fetchJson(`/public/demo-live.json?ts=${nowMs()}`);
+      // Vercel serves `public/` at the site root, so this file is `/demo-live.json` (NOT `/public/demo-live.json`).
+      const data = await fetchJson(`/demo-live.json?ts=${nowMs()}`);
       state.data = data;
       state.source = 'demo';
       state.lastFetchedAt = nowMs();
