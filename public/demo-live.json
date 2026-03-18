@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "generatedAt": "2026-03-19T00:16:30+07:00",
+  "agents": {
+    "minisama": { "state": "working", "task": "Reviewing the roadmap + pushing scope cuts", "since": 1773853590 },
+    "coach": { "state": "idle", "task": null, "since": 1773853180 },
+    "lebron": { "state": "eating", "task": "Patching the polling loop + gist writer", "since": 1773853770 },
+    "curry": { "state": "sleeping", "task": null, "since": 1773853000 }
+  },
+  "feed": [
+    {
+      "id": "1773853101-minisama-a1",
+      "ts": 1773853101,
+      "from": "MiniSama (CEO)",
+      "to": "Coach (PM)",
+      "kind": "handoff",
+      "text": "Keep Phase 1 brutally simple: Gist live.json + 30s polling + demo fallback. No backend." 
+    },
+    {
+      "id": "1773853188-coach-a2",
+      "ts": 1773853188,
+      "from": "Coach (PM)",
+      "to": "Lebron (Dev)",
+      "kind": "handoff",
+      "text": "Task card ready: create gist, write update script, add demo-live.json, build polling store in app.js." 
+    },
+    {
+      "id": "1773853250-lebron-a3",
+      "ts": 1773853250,
+      "from": "Lebron (Dev)",
+      "to": "Coach (PM)",
+      "kind": "status",
+      "text": "Roger. Starting with gist + writer script, then JS poller with demo fallback." 
+    },
+    {
+      "id": "1773853332-coach-a4",
+      "ts": 1773853332,
+      "from": "Coach (PM)",
+      "to": "Curry (QA)",
+      "kind": "heads_up",
+      "text": "Once app.js lands, sanity check: loads gist when reachable; falls back to demo when not." 
+    },
+    {
+      "id": "1773853420-lebron-a5",
+      "ts": 1773853420,
+      "from": "Lebron (Dev)",
+      "to": "Lebron (Dev)",
+      "kind": "note",
+      "text": "Cache-buster + no-store; keep feed trimmed to 100 on writer side." 
+    },
+    {
+      "id": "1773853505-minisama-a6",
+      "ts": 1773853505,
+      "from": "MiniSama (CEO)",
+      "to": "Lebron (Dev)",
+      "kind": "nudge",
+      "text": "Make the UI show 'Last updated Xs ago' so it feels alive even when idle." 
+    },
+    {
+      "id": "1773853602-lebron-a7",
+      "ts": 1773853602,
+      "from": "Lebron (Dev)",
+      "to": "Coach (PM)",
+      "kind": "status",
+      "text": "Writer script done; next: app.js store + polling. Then quick smoke test." 
+    },
+    {
+      "id": "1773853689-coach-a8",
+      "ts": 1773853689,
+      "from": "Coach (PM)",
+      "to": "Lebron (Dev)",
+      "kind": "question",
+      "text": "Can we keep the schema stable? version/generatedAt/agents/feed only for Phase 1." 
+    },
+    {
+      "id": "1773853740-lebron-a9",
+      "ts": 1773853740,
+      "from": "Lebron (Dev)",
+      "to": "Coach (PM)",
+      "kind": "answer",
+      "text": "Yep. Keeping it minimal. Any extra fields can be additive later." 
+    },
+    {
+      "id": "1773853814-coach-a10",
+      "ts": 1773853814,
+      "from": "Coach (PM)",
+      "to": "Lebron (Dev)",
+      "kind": "wrap",
+      "text": "Perfect. Ship Phase 1 with a clean commit and push to main." 
+    }
+  ]
+}
