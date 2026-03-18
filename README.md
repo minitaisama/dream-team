@@ -146,7 +146,10 @@ agents/
 data/
 └── weeks/             # Retro data (JSON)
 index.html             # Retro dashboard
+PLAYBOOK.md            # Full runbook (v3.1)
 ```
+
+> **Note:** CEO (MiniSama) is the orchestrating agent that runs outside this repo — it lives in the OpenClaw workspace and coordinates the pipeline. The `agents/` directory contains the configs for the 3 execution agents (PM, Dev, QA) that get spawned by the CEO.
 
 ### Key files
 
