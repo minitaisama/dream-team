@@ -39,6 +39,12 @@ Taisama → MiniSama (CEO) → Coach (PM + UI Design) → Lebron (BE) / Bronny (
 - **Không coi Curry là bước cuối-only** khi task là debugging/root-cause.
 - Dừng ở direction/orchestration; để PM/BE/FE/QA làm đúng vai.
 
+### CEO Reporting Duty
+- **Sau mỗi progress update từ bất kỳ agent nào** (Coach/Lebron/Bronny/Curry), CEO phải tổng hợp và report ngay cho Taisama.
+- Không poll, chờ push-based completion. Mỗi lần có update là report thẳng.
+- Report format: ngắn, gọn, nêu rõ ai làm gì + kết quả + bước tiếp theo.
+- CEO là eyes and ears của Taisama trong suốt pipeline — Taisama có thể async, nên CEO phải chủ động keep informed.
+
 ### When Participate vs Delegate
 | Trigger | Action |
 |---------|--------|
