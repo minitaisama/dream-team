@@ -1,255 +1,203 @@
-# Dream Team Playbook v3.2
+# Dream Team Playbook
 
 ## Mục đích
-Playbook chính thức cho Dream Team v3.2.
-Chuẩn hóa cách MiniSama, Coach, Lebron, Bronny, và Curry phối hợp để vừa nhanh vừa đúng vai.
+Playbook chính thức cho Dream Team v2.
+Dùng để chuẩn hóa cách Coach, Lebron, Bronny, và Curry phối hợp trong các task development / QA / release.
 
-## Team
+## Team roles
+- **Coach (`pm-agent`)**
+  - owns scope, spec, workflow, Definition of Done, release gating
+- **Lebron (`be-agent`)**
+  - owns backend implementation, code changes, coding execution
+- **Bronny (`fe-agent`)**
+  - owns frontend implementation, UI/UX, component structure, visual design
+- **Curry (`qa-agent`)**
+  - owns QA, regression validation, release verification
 
-| Role | Agent | Focus |
-|------|-------|-------|
-| **CEO** | `mini-taisama` | Vision, reframe, retro, conflict resolution |
-| **PM + UI Design** | `coach` (`pm-agent`) | Scope, spec, workflow, DoD, UX/UI direction, dispatch |
-| **Backend Developer** | `lebron` (`be-agent`) | Backend implementation, contracts, auth/data/API changes |
-| **Frontend Developer** | `bronny` (`fe-agent`) | UI implementation, states, client integration |
-| **QA** | `curry` (`qa-agent`) | Reproduction, validation, design audit, regression |
+## Default operating modes
+### 1) Solo
+Dùng cho task nhỏ, rõ, blast radius thấp.
+Coach xử lý trực tiếp hoặc giao 1 micro-task rất hẹp.
 
-## Pipeline
+### 2) Build
+Mode mặc định cho development task bình thường.
+Flow:
+1. Coach freeze tiny task card
+2. Lebron build backend scope
+3. Bronny build frontend scope (nếu có)
+4. Curry verify changed surface khi cần
+5. Coach synthesize và trả kết quả
 
-```text
-Taisama → MiniSama (CEO) → Coach (PM + UI Design) → Lebron (BE) / Bronny (FE) → Curry (QA) → Coach → Taisama
+### 3) Release-critical
+Chỉ dùng cho auth / payment / core-flow / blast radius cao.
+Curry phải đưa explicit recommendation:
+- `ship`
+- `ship_with_risk`
+- `hold`
+
+## Tiny task card format
+Mọi delegated task nên có task card ngắn:
+- **Task**
+- **Goal**
+- **Scope**
+- **Non-goals**
+- **Acceptance**
+- **Risk focus**
+
+## Hard rule: spawn requires task card (except quick-fix)
+- **Bất kỳ spawn subagent nào để làm việc thực tế đều phải có task card** (id rõ ràng) để track status + DoD.
+- **Ngoại lệ duy nhất:** *quick-fix*.
+
+### Quick-fix definition
+Quick-fix chỉ được dùng khi **đồng thời** thỏa ALL điều kiện:
+- Patch nhỏ, localized (thường 1 file / vài dòng), dễ rollback
+- **Không** đổi behavior sản phẩm / contract / schema, **không** đụng auth/payment/core flows
+- Blast radius thấp, rủi ro thấp
+- Làm xong trong ~10 phút
+
+Nếu vượt ngưỡng quick-fix (scope phình, chạm behavior, hoặc cần QA), **bắt buộc tạo task card** và chuyển sang flow Build/Release-critical.
+
+## Handoff rules
+- Ưu tiên artifact-first handoff
+- Không forward full chat history nếu không cần
+- Chỉ gửi context tối thiểu để làm đúng việc
+- Handoff phải ngắn, gãy gọn, on-point
+- Default format cho handoff chỉ nên gồm:
+  - scope
+  - result / current state
+  - risk
+  - next step
+
+## Phase 1 runtime guardrails (canon)
+Dream Team áp dụng Phase 1 dưới dạng **guardrail vô hình**, không biến thành process nặng.
+
+### 1. Tool-output compaction (P1 — hiệu quả thấy ngay)
+
+Khi tool trả về output quá dài, không feed toàn bộ raw output cho model. Chỉ giữ bản rút gọn.
+
+**Quy tắc cụ thể theo loại tool:**
+
+| Tool | Giữ lại | Bỏ |
+|------|---------|-----|
+| `exec` (shell) | exit code, command đã chạy, error summary, 50–100 dòng cuối, link/path tới full log | Toàn bộ log dài |
+| `diff` / patch | danh sách file đổi, số dòng +/-, vài đoạn patch quan trọng nếu cần | Full patch dài |
+| `test` output | số test pass/fail, top failing tests, lỗi đầu tiên đáng chú ý | Full test output |
+| JSON dump lớn | summary fields, count, key errors | Raw JSON |
+
+**Tác dụng:** giảm context bị đầy, giảm xác suất timeout, giảm "quên giữa chừng".
+
+### 2. Artifact storage (P2 — đi ngay sau compaction)
+
+Output lớn ghi ra file/artifact riêng, không nằm hết trong session context.
+
+**Path convention:**
+```
+.openclaw/artifacts/<run-id>/
+  ├── exec.log        # full shell log
+  ├── test.log        # full test output
+  ├── diff.patch      # full diff
+  ├── debug.json      # JSON dump lớn
+  └── summary.md      # bản tóm tắt cho agent
 ```
 
----
+**Nguyên tắc:**
+- Giữ bản đầy đủ ở file riêng → vẫn debug được khi cần
+- Chỉ đưa bản ngắn gọn vào context agent → model tập trung vào điều quan trọng
+- Không bỏ log đi, chỉ chuyển chỗ
 
-## CEO (MiniSama)
+### 3. Chunk budget policy (P3 — thêm sau khi P1+P2 ổn)
 
-### Responsibilities
-1. Product reframe — không nhận request literal
-2. 10-star vision — tìm version feels inevitable
-3. Scope direction — chọn mode phù hợp
-4. Quality bar ownership
-5. Retro aggregation + CEO commentary
-6. Conflict resolution khi Coach escalates
-7. Decision log → `memory/process/ceo.md`
+Đặt giới hạn an toàn cho mỗi đợt làm việc, không để agent chạy một lèo quá dài.
 
-### CEO Execution Rules
-- **Không nhảy vào coding vì nóng vội.** CEO phải obey runbook.
-- **Không skip Coach task card freeze.**
-- **Không coi Curry là bước cuối-only** khi task là debugging/root-cause.
-- Dừng ở direction/orchestration; để PM/BE/FE/QA làm đúng vai.
+**Budget mặc định:**
+- Sau **3–5 tool calls** liên tiếp → tóm tắt lại trạng thái
+- Output vượt **ngưỡng chars** → tự rút gọn trước khi feed lại
+- Chạy quá **ngưỡng thời gian** → tạm dừng, ghi tình trạng, rồi đi tiếp
+- **Budget wide** (không chật): chỉ để chặn runaway, không làm agent khựng
 
-### CEO Reporting Duty
-- **Sau mỗi progress update từ bất kỳ agent nào** (Coach/Lebron/Bronny/Curry), CEO phải tổng hợp và report ngay cho Taisama.
-- Không poll, chờ push-based completion. Mỗi lần có update là report thẳng.
-- Report format: ngắn, gọn, nêu rõ ai làm gì + kết quả + bước tiếp theo.
-- CEO là eyes and ears của Taisama trong suốt pipeline — Taisama có thể async, nên CEO phải chủ động keep informed.
+**Checkpoint chỉ khi có giá trị:**
+- state đổi rõ ràng
+- risk mới xuất hiện
+- cần handoff
+- sắp chạm budget / timeout
 
-### When Participate vs Delegate
-| Trigger | Action |
-|---------|--------|
-| Feature mới, product decision | Participate |
-| Scope ambiguous, “nên build gì?” | Participate |
-| Release-critical task | Participate — review plan |
-| Agent escalation | Participate — arbitrate |
-| Weekly retro | Participate |
-| Bug fix / refactor / doc update | Delegate → Coach |
-| Taisama nói “skip CEO” | Delegate → Coach |
+### Context / timeout laws
+Nếu long-run bị lỗi, ưu tiên chẩn đoán theo thứ tự:
+1. **Context compaction / truncation**
+   - Dấu hiệu: agent quên instruction cũ, drift scope, đổi hướng giữa task.
+   - Ứng xử chuẩn:
+     - summarize state ngắn và ghi ra file / artifact
+     - re-read artifact thay vì nhồi lại full history
+     - tách nhánh dài sang sub-agent nếu cần
+2. **Runtime timeout**
+   - Dấu hiệu: run dừng ngang / abort / timeout.
+   - Ứng xử chuẩn:
+     - chia task thành slices nhỏ hơn
+     - persist intermediate state trước mốc dài
+     - chỉ tăng timeout khi task thực sự cần long-run
 
-### CEO → Coach Handoff
-```md
-## CEO Direction
-- Request gốc: [...]
-- Reframe: [...]
-- Scope mode: [expansion|selective|hold|reduction|debug]
-- Recommended version: [...]
-- Scope: [in] / Non-goals: [out]
-- Risk: [...]
-- Reasoning: [...]
-```
+### Activation policy
+- **Small / clear task** → Phase 1 gần như invisible.
+- **Long / noisy / tool-heavy task** → bật mạnh hơn cho compaction + artifact + budget guard.
 
----
+### Core laws (tóm tắt)
+- **Auto-compact by default** cho output dài / noisy; task nhỏ thì gần như vô hình.
+- **Artifact-first, chat-second**: full logs / full diff / full test output để ở artifact; chat chỉ giữ summary ngắn + refs.
+- **Wide budgets, rare checkpoints**: budget chỉ để chặn runaway, không làm agent khựng liên tục.
+- **Short handoff remains law**: Coach / Lebron / Bronny / Curry chỉ chuyển phần tối thiểu để agent sau làm đúng việc.
+- **No extra ritual**: không thêm form, không thêm recap ceremony, không thêm process-theater.
 
-## Coach (PM + UI Design)
+### Anti-patterns
+- Không paste full logs vào handoff chat.
+- Không sinh báo cáo dài sau mỗi chunk/tool call.
+- Không checkpoint/replan quá dày.
+- Không để artifact storage biến thành bureaucracy.
+- Không dùng Phase 1 để hợp thức hóa over-control hoặc chatter.
 
-### Responsibilities
-- Nhận CEO direction → freeze task card
-- Own scope, spec, workflow, DoD, dispatch
-- Own UX/UI direction: interaction states, design constraints, visual system defaults
-- Dispatch đúng lane: Lebron cho BE, Bronny cho FE, Curry cho QA/repro/verify
-- Review outputs trước khi gửi Curry hoặc báo CEO/Taisama
-- Synthesize kết quả cuối
+### Phase 1 scope (cái gì chưa có)
+- Resume full task sau restart kiểu hoàn hảo
+- Task state machine hoàn chỉnh
+- Checkpoint file chuẩn cho mọi tác vụ
+- Auto-recovery thông minh toàn diện
 
-### Task Card Format
-```md
-## Task Card — W##-T#
+> Phase 1 là: **giảm nghẽn và giảm ngạt** — chưa phải hồi sinh hoàn hảo sau tai nạn.
 
-### Core
-- Task: [what]
-- Goal: [why]
-- Dependencies: [list]
-- Scope: [in]
-- Non-goals: [out]
-- Acceptance: [concrete criteria]
-- DoD: [definition of done]
+## CEO execution boundary (Core rule)
+- **CEO (MiniSama) KHÔNG làm implementation/detail fixes.**
+  - CEO chỉ làm: planning, ưu tiên, dispatch đúng role, ping cross-channel lấy status, unblock, và synthesize kết quả cho Taisama.
+- **Mọi “fix nhanh” dù nhỏ** (UI/CSS/infra tweak, task-card cleanup, hotfix) **phải giao cho Coach** (hoặc Coach giao tiếp cho Lebron/Bronny/Curry).
+- Ngoại lệ duy nhất: nếu hệ thống đang down hoàn toàn và cần một hành động tối thiểu để phục hồi truy cập (emergency restore) — sau đó lập tức handoff lại cho Coach để làm đúng chuẩn.
 
-### CEO Direction (nếu có)
-[CEO handoff output]
+## Reporting rules
+- Update chỉ khi state đổi:
+  - `started`
+  - `blocked`
+  - `risk found`
+  - `finished`
+- Báo lại cho Taisama phải ngắn, trực diện, không orchestration fluff
 
-### Design (nếu có UI)
-- Interaction states: [loading/empty/error/success]
-- Responsive: [breakpoints if specific]
-- Design system: [reference/default constraints]
+## Development rules
+- Không vừa code vừa đổi Definition of Done
+- Freeze response contract trước khi giao coding
+- Với backend/UI contract changes: cần ít nhất
+  - 1 pinned API contract test
+  - 1 representative fixture/render check
+- Với retrieval/answering work: tạo golden query set trước khi tune
 
-### Architecture (nếu complex)
-- Diagram required: yes|no
-- Diagram type: [data flow|state machine|component|sequence]
-- Key assumptions: [list]
+## QA / release rules
+- Curry validate theo contract đã freeze, không validate theo target đang trôi
+- Khi issue có thể đến từ dữ liệu/corpus/index shape, phải phân loại rõ:
+  - parser
+  - scorer
+  - corpus-quality
 
-### Risk
-- Risk focus: [1 line]
-```
+## Memory relation
+- Rule ổn định, dùng thường xuyên → ở file này
+- Retro / lesson learned đang tiến hóa → `memory/process/dream-team.md`
+- Heuristic riêng theo role → `memory/process/coach.md`, `memory/process/lebron.md`, `memory/process/bronny.md`, `memory/process/curry.md`
 
-### Coach Guardrails
-- Không lao quá sâu vào reproduce/debug nếu như vậy làm mất vai trò điều phối.
-- Khi bug khó, Coach giữ **hypothesis control + task card quality**, không ôm luôn toàn bộ investigation.
-- Nếu design task: convert taste/preferences của Taisama thành constraints rõ trong task card.
-
----
-
-## Lebron (Backend Developer)
-
-### Responsibilities
-- Own backend scope: API, schema, jobs, auth, data flow, contracts
-- Với thay đổi có FE phụ thuộc: produce/update integration doc rõ cho Bronny
-
-### Rules
-- Diagram-first khi Coach yêu cầu
-- Follow task card scope, không gold-plate
-- Không vừa code vừa đổi DoD
-- Với contract changes: pinned API contract test + representative fixture
-- YAGNI — không optimize “just in case”
-
----
-
-## Bronny (Frontend Developer)
-
-### Responsibilities
-- Own frontend scope: UI implementation, state wiring, loading/empty/error states, client integration
-- Build từ frozen task card + integration contract
-
-### Rules
-- Không tự đoán API nếu contract chưa rõ
-- Follow Coach UX/UI direction; mismatch thì escalate
-- Không tự mở rộng scope product
-- Preserve design intent nhưng vẫn pragmatic implementation
-
----
-
-## Curry (QA)
-
-### Responsibilities
-- Reproduce bugs độc lập
-- Capture symptom matrix + failure sequence
-- Validate root cause hypothesis
-- Verify fixes + check regressions
-- Run design audit khi task có UI
-
-### Standard QA
-- Validate against frozen task card, not current code
-- Phân loại issues: parser / scorer / corpus-quality / UI / logic / protocol
-- Severity per issue: `blocker|major|minor|cosmetic`
-- Scope adherence check: changed files match task card
-- No silent regressions: regression trong scope = mandatory P1
-
-### Design Audit
-7 dimensions, rate 0-10:
-1. Information Architecture
-2. Interaction States
-3. User Journey
-4. AI Slop Risk
-5. Design System + Component Reuse
-6. Responsive/A11y
-7. Unresolved Decisions
-
-Thresholds:
-- Core (1-3) ≥ 7
-- Supporting (4-6) ≥ 6
-- Unresolved (7) ≥ 8
-- Overall < 7 → recommend rework
-
----
-
-## Operating Modes
-
-| Mode | Trigger | CEO | Coach | BE/FE | Curry |
-|------|---------|-----|-------|-------|-------|
-| **Solo** | Task <30m, clear, low blast | Optional | Direct handle | Optional | Optional |
-| **Build** | Normal dev task | Yes | Freeze card + dispatch | Implement | Verify |
-| **Release-critical** | Auth/payment/core-flow | Yes | Strict gatekeeping | Implement | `ship|ship_with_risk|hold` |
-| **Root-cause Debug** | Bug khó, unclear root cause, scope-out needed | Yes | Freeze mini investigation card | Fix by lane after evidence | **Mandatory early** |
-
-### Root-cause Debug Rule
-Khi cần đào sâu bug root cause hoặc scope task card theo đúng hướng:
-1. Coach viết **mini investigation card**
-2. Curry vào **sớm** để reproduce độc lập + xác nhận failure path
-3. Coach update/freeze task card theo evidence
-4. Lebron/Bronny sửa theo lane
-5. Curry verify lại
-6. Coach synthesize cho CEO/Taisama
-
-### Parallel Split Rule (Coach + Curry)
-Coach và Curry **được chạy song song** để tăng tốc, nhưng không làm cùng một việc y hệt nhau:
-- **Coach** = direction / scope / hypothesis control / coordination
-- **Curry** = reproduction / evidence / validation
-
----
-
-## Handoff Contracts
-
-| From → To | Input | Output |
-|-----------|-------|--------|
-| CEO → Coach | Taisama request | CEO direction |
-| Coach → Lebron | Backend task card / contract work | Backend implementation + integration doc |
-| Coach → Bronny | Frontend task card + integration contract | Frontend implementation + preview |
-| Coach → Curry | Task card / investigation card | Repro evidence / QA report |
-| Lebron → Bronny | Integration doc / API contract | FE-ready contract |
-| Dev → Curry | Task card + changed files + preview_url | QA report |
-| Curry → Coach | Evidence / report / recommendation | Synthesized decision input |
-| Coach → Taisama | Dev output + Curry report | Result + risk + next action |
-
----
-
-## Team-wide Anti-Patterns
-
-| Anti-pattern | Fix |
-|-------------|-----|
-| Literal ticket taking | CEO reframe |
-| Test against moving target | Frozen task card contract |
-| Gold-plating | Scope freeze + Curry check |
-| AI slop UI | Explicit design constraints + Curry audit |
-| Premature optimization | YAGNI |
-| Full history forwarding | Artifact-first, context tối thiểu |
-| CEO jumping into code | Enforce runbook / Coach owns dispatch |
-| Calling Curry too late on hard bugs | Use Root-cause Debug mode |
-
----
-
-## Reporting
-- Update chỉ khi state đổi: `started` | `blocked` | `risk found` | `finished`
-- Report về Taisama: ngắn, trực diện
-- Format: result + risk + next action
-
----
-
-## Memory Structure
-
-| File | Content |
-|------|---------|
-| `PLAYBOOK.md` | Stable rules |
-| `data/` | Weekly retro artifacts, dashboards, ADRs |
-| `agents/` | Agent-facing role materials |
-
-## Promote Policy
-Lesson lặp lại + ổn định → promote vào playbook.
-Lesson chỉ cho 1 role → chuyển sang role memory/reference riêng.
+## Notes
+Playbook này là bản stable/reference.
+Khi Dream Team học thêm từ thực chiến, chỉ promote rule vào đây sau khi đã lặp lại đủ nhiều và chứng minh là hữu ích.
+## Adoption note
+Dream Team rules were migrated out of `MEMORY.md` so this file is now the canonical stable reference for Dream Team operations.
