@@ -93,7 +93,7 @@
   .matrix-cell { display: flex; align-items: center; justify-content: center; min-height: 36px; font-size: 13px; font-weight: 700; border-radius: 6px; transition: background 0.2s; }
 
   /* Mobile bottom nav */
-  .bottom-nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 0; font-size: 10px; color: #cbc3d7; cursor: pointer; transition: color 0.2s; min-height: 48px; justify-content: center; flex: 1; }
+  .bottom-nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 0; font-size: 11px; color: #cbc3d7; cursor: pointer; transition: color 0.2s; min-height: 48px; justify-content: center; flex: 1; }
   .bottom-nav-item.active { color: #d0bcff; }
   .bottom-nav-item .material-symbols-outlined { font-size: 22px; }
 
@@ -625,7 +625,7 @@ function renderKPIs(scoreboard) {
     { label: 'Hoàn thành', value: (tc !== undefined && tc !== null && tc === 0) ? '—' : (tc ?? '—'), icon: 'task_alt', color: 'secondary', muted: (tc === 0) },
     { label: 'Bị chặn', value: (tb !== undefined && tb !== null && tb === 0) ? '—' : (tb ?? '—'), icon: 'block', color: 'error', muted: (tb === 0) },
     { label: 'Action mở', value: aio ?? '—', icon: 'pending_actions', color: 'tertiary' },
-    { label: 'Agent', value: agents ?? '—', icon: 'smart_toy', color: 'primary', pulse: true },
+    { label: 'Agent', value: (agents === 0 || agents === '0') ? '0/7' : (agents ?? '—'), icon: 'smart_toy', color: 'primary', pulse: true },
     { label: 'Tokens', value: (tokens !== undefined && tokens !== null && (tokens === 0 || tokens === '0')) ? '—' : (tokens ?? '—'), icon: 'electric_bolt', color: 'primary', muted: (tokens === 0 || tokens === '0') }
   ];
 
@@ -738,7 +738,7 @@ function renderAgents(agents) {
             <span class="material-symbols-outlined text-${color} text-xl" data-weight="fill">${icon}</span>
           </div>
           <div class="flex-1 min-w-0">
-            <h4 class="font-bold text-sm leading-tight truncate">${esc(a.name)}</h4>
+            <h4 class="font-bold text-sm leading-snug line-clamp-2">${esc(a.name)}</h4>
             <div class="mt-1 flex items-center gap-2">
               ${renderAgentStatusBadge(a)}
             </div>
