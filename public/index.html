@@ -484,22 +484,6 @@ function initDatePicker() {
   selectRetroDay(1);
 }
 
-      activePill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-    }
-  });
-}
-
-function initDatePicker() {
-  // Default: most recent date with retro data
-  const dates = getSortedRetroDates();
-  if (dates.length > 0) {
-    selectedDate = dates[dates.length - 1];
-  } else {
-    selectedDate = new Date().toISOString().split('T')[0];
-  }
-  initRetroCalendar();
-}
-
 // Check if all agents share the same health score (no real data)
 function allAgentsSameScore(agents) {
   if (!agents || agents.length <= 1) return true;
